@@ -84,9 +84,10 @@ export async function POST(request: Request) {
         model: 'claude-3.5-sonnet-20241022',
         max_tokens: 4000,
         temperature: 0,
+        system: "You are a real estate disclosure document analyzer. Analyze documents and return only valid JSON with no additional text or markdown.",
         messages: [{
           role: 'user',
-          content: `Analyze this real estate disclosure document and return a JSON object with exactly these fields: propertyAddress, issues (array with issue, severity, details, estimatedCost), recommendations (array with action, priority, timeframe), and summary. Format:
+          content: `Return a JSON object with exactly these fields: propertyAddress, issues (array with issue, severity, details, estimatedCost), recommendations (array with action, priority, timeframe), and summary. Format:
 {
   "propertyAddress": "string",
   "issues": [
