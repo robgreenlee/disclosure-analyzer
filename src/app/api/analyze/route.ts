@@ -85,7 +85,7 @@ export async function POST(request: Request) {
         max_tokens: 4000,
         temperature: 0,
         messages: [{
-          role: 'user',
+          role: 'human',
           content: `You are a real estate disclosure document analyzer. Please analyze the following document and return ONLY a JSON object with this exact structure. Do not include any additional text or markdown formatting:
 {
   "propertyAddress": "string",
