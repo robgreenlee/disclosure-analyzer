@@ -48,8 +48,8 @@ export async function POST(request: Request) {
 
     console.log(`[${requestId}] Content length: ${fileContent.length}`);
 
-    // Split content if too long (Claude Sonnet can handle larger inputs)
-    const MAX_CHUNK_SIZE = 35000; // Balanced limit for Sonnet
+    // Split content if too long (being very conservative with limits)
+    const MAX_CHUNK_SIZE = 15000; // Reduced limit to test
     let contentToAnalyze = fileContent;
 
     if (fileContent.length > MAX_CHUNK_SIZE) {
@@ -78,14 +78,16 @@ export async function POST(request: Request) {
         apiKey: process.env.ANTHROPIC_API_KEY || ''
       });
       
+      console.log(`[${requestId}] Sending request to Claude with content length:`, contentToAnalyze.length);
+      
       const message = await client.messages.create({
         model: 'claude-3.5-sonnet-20241022',
         max_tokens: 4000,
         temperature: 0,
-        system: "You are a real estate disclosure document analyzer. Analyze documents and return only valid JSON with no additional text or markdown.",
+        system: "You are a real estate disclosure analyzer. Return only JSON.",
         messages: [{
           role: 'user',
-          content: `Return a JSON object with exactly these fields: propertyAddress, issues (array with issue, severity, details, estimatedCost), recommendations (array with action, priority, timeframe), and summary. Format:
+          content: `Analyze this document and return a JSON object. Format:
 {
   "propertyAddress": "string",
   "issues": [
@@ -186,8 +188,17 @@ Note: ${fileContent.length > MAX_CHUNK_SIZE ? 'This is a truncated version of a 
       }
 
       if (e.status === 400) {
+        console.error(`[${requestId}] Claude 400 error details:`, {
+          error: e,
+          requestSize: contentToAnalyze.length,
+          messagePreview: contentToAnalyze.substring(0, 100)
+        });
         return NextResponse.json(
-          { error: 'Invalid request to AI service - content may be too long' },
+          { 
+            error: 'Invalid request to AI service - content may be too long',
+            details: e.message,
+            contentLength: contentToAnalyze.length
+          },
           { status: 500 }
         );
       }
