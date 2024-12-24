@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 
-// Initialize Anthropic client outside request handler
-const anthropicClient = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
-});
+import { Anthropic } from '@anthropic-ai/sdk';
 
 export async function POST(request: Request) {
   const requestId = Math.random().toString(36).substring(7);
@@ -79,16 +76,17 @@ export async function POST(request: Request) {
     try {
       console.log(`[${requestId}] Calling Claude API`);
       
-      const message = await anthropicClient.messages.create({
+      const client = new Anthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY || ''
+      });
+      
+      const message = await client.messages.create({
         model: 'claude-3.5-sonnet-20241022',
         max_tokens: 4000,
         temperature: 0,
         messages: [{
-          role: 'assistant',
-          content: "I am a real estate disclosure document analyzer. I will analyze documents and return only valid JSON with no additional text or markdown."
-        }, {
           role: 'user',
-          content: `Analyze this document and return a JSON object with this structure:
+          content: `You are a real estate disclosure document analyzer. Please analyze the following document and return ONLY a JSON object with this exact structure. Do not include any additional text or markdown formatting:
 {
   "propertyAddress": "string",
   "issues": [
