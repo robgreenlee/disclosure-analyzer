@@ -171,7 +171,7 @@ export default function Home() {
                   Upload Disclosure Package
                 </h2>
                 <span className="text-xs text-gray-500 bg-gray-100/50 px-2 py-0.5 rounded-full">
-                  PDF or TXT (first 50k chars will be analyzed)
+                  PDF or TXT (first 25k chars will be analyzed)
                 </span>
               </div>
               
@@ -338,7 +338,7 @@ export default function Home() {
                               <div className="ml-3">
                                 <h3 className="text-sm font-medium text-yellow-800">Large Document Notice</h3>
                                 <div className="mt-2 text-sm text-yellow-700">
-                                  <p>This document is quite large. Only the first 50,000 characters will be analyzed to ensure reliable results.</p>
+                                  <p>This document is quite large. Only the first 25,000 characters will be analyzed to ensure reliable results. For best results, try uploading a shorter section of the document.</p>
                                 </div>
                               </div>
                             </div>

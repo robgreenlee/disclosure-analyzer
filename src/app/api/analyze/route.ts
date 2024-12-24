@@ -53,18 +53,26 @@ export async function POST(request: Request) {
 
     console.log(`[${requestId}] Content length: ${fileContent.length}`);
 
-    // Split content if too long (Claude has a ~100k character limit)
-    const MAX_CHUNK_SIZE = 50000; // Conservative limit
+    // Split content if too long (being very conservative with limits)
+    const MAX_CHUNK_SIZE = 25000; // Reduced limit for reliability
     let contentToAnalyze = fileContent;
 
     if (fileContent.length > MAX_CHUNK_SIZE) {
-      console.log(`[${requestId}] Content too long, truncating to ${MAX_CHUNK_SIZE} characters`);
+      console.log(`[${requestId}] Content too long (${fileContent.length} chars), truncating to ~${MAX_CHUNK_SIZE} characters`);
+      
       // Try to break at a paragraph or sentence
       const breakPoint = fileContent.lastIndexOf('\n', MAX_CHUNK_SIZE);
       const periodBreak = fileContent.lastIndexOf('. ', MAX_CHUNK_SIZE);
       const bestBreak = breakPoint > periodBreak ? breakPoint : periodBreak;
-      contentToAnalyze = fileContent.substring(0, bestBreak > 0 ? bestBreak : MAX_CHUNK_SIZE);
-      console.log(`[${requestId}] Truncated content length: ${contentToAnalyze.length}`);
+      const breakAt = bestBreak > 0 ? bestBreak : MAX_CHUNK_SIZE;
+      
+      console.log(`[${requestId}] Breaking at position ${breakAt} (${bestBreak > 0 ? 'natural break' : 'forced break'})`);
+      contentToAnalyze = fileContent.substring(0, breakAt);
+      
+      // Log the first and last 100 chars of truncated content
+      console.log(`[${requestId}] Truncated content start: "${contentToAnalyze.substring(0, 100)}..."`);
+      console.log(`[${requestId}] Truncated content end: "...${contentToAnalyze.substring(contentToAnalyze.length - 100)}"`);
+      console.log(`[${requestId}] Final truncated length: ${contentToAnalyze.length} chars`);
     }
 
     // Call Claude API
@@ -72,13 +80,11 @@ export async function POST(request: Request) {
       console.log(`[${requestId}] Calling Claude API`);
       
       const message = await anthropicClient.messages.create({
-        model: 'claude-3-opus-20240229',
+        model: 'claude-3-sonnet-20240229',
         max_tokens: 4000,
         temperature: 0,
+        system: 'You are a real estate disclosure document analyzer. Analyze documents and return only valid JSON with no additional text or markdown.',
         messages: [{
-          role: 'system',
-          content: 'You are a real estate disclosure document analyzer. Return only valid JSON.'
-        }, {
           role: 'user',
           content: `Analyze this document and return a JSON object with this structure:
 {
