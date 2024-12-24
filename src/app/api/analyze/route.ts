@@ -53,8 +53,8 @@ export async function POST(request: Request) {
 
     console.log(`[${requestId}] Content length: ${fileContent.length}`);
 
-    // Split content if too long (being very conservative with limits)
-    const MAX_CHUNK_SIZE = 25000; // Reduced limit for reliability
+    // Split content if too long (Claude Sonnet can handle larger inputs)
+    const MAX_CHUNK_SIZE = 35000; // Balanced limit for Sonnet
     let contentToAnalyze = fileContent;
 
     if (fileContent.length > MAX_CHUNK_SIZE) {
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
       console.log(`[${requestId}] Calling Claude API`);
       
       const message = await anthropicClient.messages.create({
-        model: 'claude-3-sonnet-20240229',
+        model: 'claude-3.5-sonnet-20241022',
         max_tokens: 4000,
         temperature: 0,
         system: 'You are a real estate disclosure document analyzer. Analyze documents and return only valid JSON with no additional text or markdown.',
