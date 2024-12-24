@@ -48,6 +48,16 @@ export async function POST(request: Request) {
 
     // Make request to Claude
     try {
+      // Verify API key format
+      if (!process.env.ANTHROPIC_API_KEY?.startsWith('sk-')) {
+        console.error('Invalid API key format');
+        return NextResponse.json(
+          { error: 'Invalid API key configuration' },
+          { status: 500 }
+        );
+      }
+
+      console.log('Making Claude API request...');
       const message = await anthropic.messages.create({
         model: 'claude-3-opus-20240229',
         max_tokens: 4000,
@@ -134,10 +144,34 @@ ${fileContent}`
       }
     } catch (e) {
       console.error('Error calling Claude API:', e);
+      
+      // Handle specific Claude API errors
+      if (e.status === 401) {
+        return NextResponse.json(
+          { error: 'Authentication failed - please check API key' },
+          { status: 500 }
+        );
+      }
+      
+      if (e.status === 429) {
+        return NextResponse.json(
+          { error: 'Rate limit exceeded - please try again later' },
+          { status: 500 }
+        );
+      }
+
+      if (e.status === 400) {
+        return NextResponse.json(
+          { error: 'Invalid request to AI service - content may be too long' },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json(
         { 
           error: 'Error analyzing document',
-          details: e.message
+          details: e.message,
+          status: e.status
         },
         { status: 500 }
       );
