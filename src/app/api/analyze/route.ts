@@ -1,64 +1,63 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 
+// Initialize Anthropic client outside request handler
+const anthropicClient = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || '',
+});
+
 export async function POST(request: Request) {
-  console.log('API route started');
-  
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`[${requestId}] Starting request processing`);
+
   try {
-    // Check API key
+    // Validate environment
     if (!process.env.ANTHROPIC_API_KEY) {
-      console.error('Missing ANTHROPIC_API_KEY');
+      console.error(`[${requestId}] Missing ANTHROPIC_API_KEY`);
       return NextResponse.json(
-        { error: 'Server configuration error' },
+        { error: 'Server configuration error - missing API key' },
+        { status: 500 }
+      );
+    }
+
+    if (!process.env.ANTHROPIC_API_KEY.startsWith('sk-')) {
+      console.error(`[${requestId}] Invalid API key format`);
+      return NextResponse.json(
+        { error: 'Server configuration error - invalid API key' },
         { status: 500 }
       );
     }
 
     // Parse request body
-    let body;
+    let requestBody;
     try {
-      body = await request.json();
-      console.log('Request body parsed successfully');
+      requestBody = await request.json();
+      console.log(`[${requestId}] Request body parsed`);
     } catch (e) {
-      console.error('Error parsing request body:', e);
+      console.error(`[${requestId}] Failed to parse request body:`, e);
       return NextResponse.json(
         { error: 'Invalid request format' },
         { status: 400 }
       );
     }
 
-    // Validate request body
-    const { fileContent } = body;
+    // Validate request data
+    const { fileContent } = requestBody;
     if (!fileContent) {
-      console.error('No file content provided');
+      console.error(`[${requestId}] No file content provided`);
       return NextResponse.json(
-        { error: 'No file content provided' },
+        { error: 'No content provided for analysis' },
         { status: 400 }
       );
     }
 
-    console.log('File content length:', fileContent.length);
+    console.log(`[${requestId}] Content length: ${fileContent.length}`);
 
-    // Initialize Anthropic
-    const anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
-
-    console.log('Making request to Claude...');
-
-    // Make request to Claude
+    // Call Claude API
     try {
-      // Verify API key format
-      if (!process.env.ANTHROPIC_API_KEY?.startsWith('sk-')) {
-        console.error('Invalid API key format');
-        return NextResponse.json(
-          { error: 'Invalid API key configuration' },
-          { status: 500 }
-        );
-      }
-
-      console.log('Making Claude API request...');
-      const message = await anthropic.messages.create({
+      console.log(`[${requestId}] Calling Claude API`);
+      
+      const message = await anthropicClient.messages.create({
         model: 'claude-3-opus-20240229',
         max_tokens: 4000,
         temperature: 0,
@@ -93,66 +92,71 @@ ${fileContent}`
         }]
       });
 
-      console.log('Received response from Claude');
+      console.log(`[${requestId}] Received Claude response`);
 
+      // Validate Claude response
       if (!message.content[0]?.text) {
-        console.error('No content in Claude response');
+        console.error(`[${requestId}] Empty response from Claude`);
         return NextResponse.json(
           { error: 'Empty response from analysis service' },
           { status: 500 }
         );
       }
 
-      const responseText = message.content[0].text;
-      console.log('Claude response text:', responseText.substring(0, 100) + '...');
-
-      // Parse JSON response
+      // Parse and validate JSON response
       try {
-        const cleanedText = responseText.trim()
+        const responseText = message.content[0].text;
+        console.log(`[${requestId}] Raw response preview:`, responseText.substring(0, 100));
+
+        // Clean the response text
+        const cleanedText = responseText
+          .trim()
           .replace(/```json\n?/, '')
           .replace(/```$/, '');
-        
-        const analysisData = JSON.parse(cleanedText);
-        console.log('Successfully parsed JSON response');
 
-        // Validate response structure
+        // Parse JSON
+        const analysisData = JSON.parse(cleanedText);
+        console.log(`[${requestId}] Successfully parsed response`);
+
+        // Validate required fields
         const requiredFields = ['propertyAddress', 'issues', 'recommendations', 'summary'];
         const missingFields = requiredFields.filter(field => !analysisData[field]);
 
         if (missingFields.length > 0) {
-          console.error('Missing required fields:', missingFields);
-          return NextResponse.json(
-            { 
-              error: 'Invalid response format',
-              details: `Missing fields: ${missingFields.join(', ')}`
-            },
-            { status: 500 }
-          );
+          console.error(`[${requestId}] Missing fields in response:`, missingFields);
+          return NextResponse.json({
+            error: 'Invalid response format',
+            details: `Missing required fields: ${missingFields.join(', ')}`
+          }, { status: 500 });
         }
 
+        // Return successful response
+        console.log(`[${requestId}] Returning successful response`);
         return NextResponse.json(analysisData);
+
       } catch (e) {
-        console.error('Error parsing Claude response:', e);
-        console.error('Raw response:', responseText);
-        return NextResponse.json(
-          { 
-            error: 'Error parsing analysis results',
-            details: e.message
-          },
-          { status: 500 }
-        );
+        console.error(`[${requestId}] Failed to parse Claude response:`, e);
+        return NextResponse.json({
+          error: 'Failed to parse analysis results',
+          details: e.message
+        }, { status: 500 });
       }
-    } catch (e) {
-      console.error('Error calling Claude API:', e);
-      
+
+    } catch (e: any) {
+      console.error(`[${requestId}] Claude API error:`, {
+        status: e.status,
+        message: e.message,
+        type: e.type
+      });
+
       // Handle specific Claude API errors
       if (e.status === 401) {
         return NextResponse.json(
-          { error: 'Authentication failed - please check API key' },
+          { error: 'Authentication failed - invalid API key' },
           { status: 500 }
         );
       }
-      
+
       if (e.status === 429) {
         return NextResponse.json(
           { error: 'Rate limit exceeded - please try again later' },
@@ -167,24 +171,19 @@ ${fileContent}`
         );
       }
 
-      return NextResponse.json(
-        { 
-          error: 'Error analyzing document',
-          details: e.message,
-          status: e.status
-        },
-        { status: 500 }
-      );
+      return NextResponse.json({
+        error: 'Error analyzing document',
+        details: e.message,
+        status: e.status
+      }, { status: 500 });
     }
+
   } catch (e) {
-    console.error('Unexpected error:', e);
-    return NextResponse.json(
-      { 
-        error: 'Server error',
-        details: e.message
-      },
-      { status: 500 }
-    );
+    console.error(`[${requestId}] Unexpected error:`, e);
+    return NextResponse.json({
+      error: 'Unexpected server error',
+      details: e.message
+    }, { status: 500 });
   }
 }
 

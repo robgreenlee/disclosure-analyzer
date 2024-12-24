@@ -79,14 +79,21 @@ export default function Home() {
       console.log('Sending combined content length:', combinedContent.length);
       
       try {
-        console.log('Sending request with content length:', combinedContent.length);
+        const requestData = {
+          fileContent: combinedContent
+        };
+        
+        console.log('Sending request:', {
+          contentLength: combinedContent.length,
+          timestamp: new Date().toISOString()
+        });
         
         const response = await fetch('/api/analyze', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ fileContent: combinedContent }),
+          body: JSON.stringify(requestData),
         });
 
         console.log('Response status:', response.status);
