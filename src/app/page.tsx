@@ -56,9 +56,11 @@ export default function Home() {
 
     setLoading(true);
     setError('');
+    console.log('Starting file processing...');
 
     try {
       let combinedContent = '';
+      console.log(`Processing ${files.length} files...`);
 
       for (const file of files) {
         let fileContent: string;
@@ -88,6 +90,11 @@ export default function Home() {
         });
 
         console.log('Response status:', response.status);
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Server returned non-JSON response');
+        }
+
         const data = await response.json();
         console.log('Response data:', data);
         
@@ -267,8 +274,13 @@ export default function Home() {
                   </div>
                   <div className="ml-2">
                     <h3 className="text-xs font-medium text-red-800">Analysis Error</h3>
-                    <div className="mt-1 text-xs text-red-700">
+                    <div className="mt-1 text-xs text-red-700 whitespace-pre-wrap">
                       {error}
+                      {error.includes('Server error') && (
+                        <div className="mt-2 text-xs text-gray-500">
+                          Please try again or contact support if the issue persists.
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
