@@ -53,6 +53,20 @@ export async function POST(request: Request) {
 
     console.log(`[${requestId}] Content length: ${fileContent.length}`);
 
+    // Split content if too long (Claude has a ~100k character limit)
+    const MAX_CHUNK_SIZE = 50000; // Conservative limit
+    let contentToAnalyze = fileContent;
+
+    if (fileContent.length > MAX_CHUNK_SIZE) {
+      console.log(`[${requestId}] Content too long, truncating to ${MAX_CHUNK_SIZE} characters`);
+      // Try to break at a paragraph or sentence
+      const breakPoint = fileContent.lastIndexOf('\n', MAX_CHUNK_SIZE);
+      const periodBreak = fileContent.lastIndexOf('. ', MAX_CHUNK_SIZE);
+      const bestBreak = breakPoint > periodBreak ? breakPoint : periodBreak;
+      contentToAnalyze = fileContent.substring(0, bestBreak > 0 ? bestBreak : MAX_CHUNK_SIZE);
+      console.log(`[${requestId}] Truncated content length: ${contentToAnalyze.length}`);
+    }
+
     // Call Claude API
     try {
       console.log(`[${requestId}] Calling Claude API`);
@@ -88,7 +102,9 @@ export async function POST(request: Request) {
 }
 
 Document content:
-${fileContent}`
+${contentToAnalyze}
+
+Note: ${fileContent.length > MAX_CHUNK_SIZE ? 'This is a truncated version of a longer document. Analysis is based on the first section only.' : 'This is the complete document.'}`
         }]
       });
 
