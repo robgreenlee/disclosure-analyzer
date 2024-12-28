@@ -25,7 +25,7 @@ An AI-powered tool that analyzes real estate disclosure documents and provides d
    ```bash
    npm install
    ```
-3. Copy `.env.example` to `.env` and add your Claude API key:
+3. Copy `.env.example` to `.env` and add your Anthropic API key:
    ```bash
    cp .env.example .env
    ```
