@@ -6,7 +6,7 @@ import { parsePDF } from '@/utils/pdfParser';
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
-  const [analysis, setAnalysis] = useState<string>('');
+  const [analysis, setAnalysis] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [emailCopied, setEmailCopied] = useState(false);
@@ -21,7 +21,7 @@ export default function Home() {
     if (newFiles.length > 0) {
       setFiles(prev => [...prev, ...newFiles]);
       setError('');
-      setAnalysis('');
+      setAnalysis(null);
     }
   };
 
@@ -38,7 +38,7 @@ export default function Home() {
     if (newFiles.length > 0) {
       setFiles(prev => [...prev, ...newFiles]);
       setError('');
-      setAnalysis('');
+      setAnalysis(null);
     }
   };
 
@@ -121,7 +121,7 @@ export default function Home() {
           throw new Error('Invalid analysis results. Missing required fields.');
         }
         
-        setAnalysis(JSON.stringify(data));
+        setAnalysis(data);
       } catch (err) {
         console.error('Full error details:', err);
         throw new Error(`Analysis failed: ${err.message}`);
@@ -139,54 +139,54 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-violet-50/50 px-4 py-8 pb-24">
+    <div className="min-h-screen bg-anthropic-gradient px-4 py-8 pb-24">
       <div className="relative isolate max-w-4xl mx-auto">
         {/* Background Effects */}
         <div className="absolute inset-x-0 -top-20 -z-10 transform-gpu overflow-hidden blur-3xl">
-          <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-indigo-400 to-violet-500 opacity-20" />
+          <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-[#5B2C6F] opacity-[0.02]" />
         </div>
         <div className="absolute inset-x-0 bottom-0 -z-10 transform-gpu overflow-hidden blur-3xl">
-          <div className="relative left-[calc(50%+11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-violet-500 to-indigo-400 opacity-20" />
+          <div className="relative left-[calc(50%+11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-[#936BA3] opacity-[0.02]" />
         </div>
         
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="mb-3 inline-flex rounded-full px-3 py-1 text-xs text-indigo-600 ring-1 ring-indigo-200 bg-white/50 backdrop-blur-sm">
+          <div className="mb-3 inline-flex rounded-full px-3 py-1 text-xs text-[#5B2C6F] ring-1 ring-[#5B2C6F] bg-white">
             Powered by Claude AI
           </div>
-          <h1 className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-violet-500 mb-2">
+          <h1 className="text-2xl font-bold tracking-tight text-[#5B2C6F] mb-2">
             Disclosure Package Analyzer
           </h1>
-          <p className="text-sm text-gray-600 max-w-md mx-auto">
+          <p className="text-sm text-[#666666] max-w-md mx-auto">
             Transform complex real estate disclosures into clear, actionable insights.
           </p>
         </div>
 
         {/* Main Content */}
-        <div className="bg-white/70 backdrop-blur-sm shadow-xl rounded-2xl p-6 border border-indigo-100/50">
+        <div className="bg-anthropic-card shadow-xl rounded-2xl p-6 border border-anthropic">
           <div className="space-y-6">
             <div className="flex flex-col items-center">
               <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-sm font-medium text-gray-900">
+                <h2 className="text-sm font-medium text-[#333333]">
                   Upload Disclosure Package
                 </h2>
-                <span className="text-xs text-gray-500 bg-gray-100/50 px-2 py-0.5 rounded-full">
-                  PDF or TXT (first 35k chars will be analyzed)
+                <span className="text-xs text-[#666666] bg-[#fafafa] px-2 py-0.5 rounded-full">
+                  PDF or TXT files
                 </span>
               </div>
               
               <div className="w-full max-w-lg">
                 <div 
-                  className="mt-1 flex justify-center px-6 py-8 border border-dashed border-indigo-200 rounded-xl bg-gradient-to-b from-white to-indigo-50/20 hover:to-indigo-50/40 transition-all duration-300 group cursor-pointer"
+                  className="mt-1 flex justify-center px-6 py-8 border border-dashed border-[#5B2C6F] rounded-xl bg-white hover:bg-[#fafafa] transition-all duration-300 group cursor-pointer"
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
                 >
                   <div className="text-center">
-                    <svg className="mx-auto h-5 w-5 text-indigo-400 group-hover:text-indigo-500 transition-colors duration-300" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <svg className="mx-auto h-5 w-5 text-[#5B2C6F] group-hover:text-[#936BA3] transition-colors duration-300" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4v16m8-8H4" />
                     </svg>
                     <div className="mt-3 flex flex-col items-center">
-                      <label className="relative cursor-pointer inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-200">
+                      <label className="relative cursor-pointer inline-flex items-center text-sm font-medium text-[#5B2C6F] hover:text-[#936BA3] transition-colors duration-200">
                         <span>Choose files</span>
                         <input
                           type="file"
@@ -196,7 +196,7 @@ export default function Home() {
                           multiple
                         />
                       </label>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-[#666666] mt-1">
                         or drag and drop multiple files
                       </p>
                     </div>
@@ -208,23 +208,23 @@ export default function Home() {
             {files.length > 0 && (
               <div className="mt-6 space-y-4">
                 {files.map((file, index) => (
-                  <div key={index} className="bg-gradient-to-r from-indigo-50/80 via-violet-50/50 to-purple-50/80 rounded-xl p-4 border border-indigo-200/50 shadow-lg backdrop-blur-sm">
+                  <div key={index} className="bg-white rounded-xl p-4 border border-[#E8E8E8] shadow-lg">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white to-indigo-50 shadow-md border border-indigo-100/50 flex items-center justify-center">
-                          <svg className="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="w-8 h-8 rounded-lg bg-[#fafafa] shadow-md border border-[#E8E8E8] flex items-center justify-center">
+                          <svg className="h-4 w-4 text-[#5B2C6F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h2 className="text-sm font-medium text-gray-900 truncate flex items-center">
+                        <h2 className="text-sm font-medium text-[#333333] truncate flex items-center">
                           {file.name}
-                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-indigo-50 to-violet-50 text-indigo-700 border border-indigo-200/50">
+                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#fafafa] text-[#5B2C6F] border border-[#E8E8E8]">
                             Ready
                           </span>
                         </h2>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-[#666666] mt-0.5">
                           {(file.size / (1024 * 1024)).toFixed(2)} MB · {file.type === 'application/pdf' ? 'PDF Document' : 'Text File'}
                         </p>
                       </div>
@@ -234,7 +234,7 @@ export default function Home() {
                             const newFiles = files.filter((_, i) => i !== index);
                             setFiles(newFiles);
                           }}
-                          className="text-gray-400 hover:text-red-500 transition-colors"
+                          className="text-[#666666] hover:text-red-500 transition-colors"
                         >
                           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -248,7 +248,7 @@ export default function Home() {
                   <button
                     onClick={processFiles}
                     disabled={loading}
-                    className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-full shadow-lg text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all duration-200"
+                    className="btn-primary"
                   >
                     {loading ? (
                       <>
@@ -284,7 +284,7 @@ export default function Home() {
                     <div className="mt-1 text-xs text-red-700 whitespace-pre-wrap">
                       {error}
                       {error.includes('Server error') && (
-                        <div className="mt-2 text-xs text-gray-500">
+                        <div className="mt-2 text-xs text-[#666666]">
                           Please try again or contact support if the issue persists.
                         </div>
                       )}
@@ -297,184 +297,139 @@ export default function Home() {
             {analysis && (
               <div className="mt-6 space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-[#333333]">
                     Analysis Results
                   </h2>
                 </div>
                 
-                {(() => {
-                  try {
-                    const analysisData = JSON.parse(analysis);
-                    return (
-                      <>
-                        <style jsx>{`
-                          .severity-high {
-                            @apply bg-red-100 text-red-800 border border-red-200;
-                          }
-                          .severity-medium {
-                            @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
-                          }
-                          .severity-low {
-                            @apply bg-green-100 text-green-800 border border-green-200;
-                          }
-                          .analysis-table {
-                            @apply min-w-full divide-y divide-gray-200;
-                          }
-                          .analysis-table th {
-                            @apply px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
-                          }
-                          .analysis-table td {
-                            @apply px-4 py-3 whitespace-normal;
-                          }
-                        `}</style>
-                        {combinedContent.length > 50000 && (
-                          <div className="mb-4 rounded-lg bg-yellow-50 p-4 border border-yellow-200">
-                            <div className="flex">
-                              <div className="flex-shrink-0">
-                                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                              <div className="ml-3">
-                                <h3 className="text-sm font-medium text-yellow-800">Large Document Notice</h3>
-                                <div className="mt-2 text-sm text-yellow-700">
-                                  <p>This document is quite large. Only the first 35,000 characters will be analyzed to ensure reliable results. For best results, try uploading a shorter section of the document.</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        
-                        <div className="bg-gradient-to-r from-violet-500 to-indigo-500 rounded-xl p-[1px] shadow-lg">
-                          <div className="bg-white rounded-xl p-4">
-                            <h3 className="text-sm font-medium text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-indigo-500 mb-2">Executive Summary</h3>
-                            <p className="text-sm text-gray-600 leading-relaxed">{analysisData.summary}</p>
-                          </div>
-                        </div>
+                <div className="bg-white rounded-xl p-4 border border-[#E8E8E8] shadow-lg">
+                  <h3 className="text-sm font-medium text-[#5B2C6F] mb-2">Executive Summary</h3>
+                  <p className="text-sm text-[#666666] leading-relaxed">{analysis.summary}</p>
+                </div>
 
-                        <div className="bg-white shadow-lg rounded-xl p-4 overflow-hidden border border-gray-100">
-                          <h3 className="text-sm font-medium text-gray-900 mb-4">Issues Identified</h3>
-                          <div className="overflow-x-auto">
-                            <table className="analysis-table">
-                              <thead>
-                                <tr>
-                                  <th className="rounded-tl-lg w-1/4">Issue</th>
-                                  <th className="w-1/6">Severity</th>
-                                  <th className="w-2/5">Details</th>
-                                  <th className="rounded-tr-lg w-1/6">Est. Cost</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {analysisData.issues.map((issue: any, index: number) => (
-                                  <tr key={index} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                    <td className="font-medium border-b border-gray-100">
-                                      {issue.issue}
-                                    </td>
-                                    <td className="border-b border-gray-100">
-                                      <span className={`inline-flex items-center justify-center w-20 px-2 py-1 rounded-full text-xs font-medium
-                                        ${issue.severity === 'High' 
-                                          ? 'severity-high' 
-                                          : issue.severity === 'Medium'
-                                            ? 'severity-medium'
-                                            : 'severity-low'}`}>
-                                        {issue.severity}
-                                      </span>
-                                    </td>
-                                    <td className="text-gray-600 border-b border-gray-100">
-                                      {issue.details}
-                                    </td>
-                                    <td className="font-medium border-b border-gray-100">
-                                      {issue.estimatedCost}
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
+                <div className="bg-white shadow-lg rounded-xl p-4 overflow-hidden border border-[#E8E8E8]">
+                  <h3 className="text-sm font-medium text-[#333333] mb-4">Issues Identified</h3>
+                  <div className="overflow-x-auto">
+                    <table className="analysis-table">
+                      <thead>
+                        <tr>
+                          <th className="rounded-tl-lg w-1/4">Issue</th>
+                          <th className="w-1/6">Severity</th>
+                          <th className="w-2/5">Details</th>
+                          <th className="rounded-tr-lg w-1/6">Est. Cost</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analysis.issues.map((issue: any, index: number) => (
+                          <tr key={index} className={`hover:bg-[#fafafa] transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-[#fafafa]'}`}>
+                            <td className="font-medium border-b border-[#E8E8E8]">
+                              {issue.issue}
+                            </td>
+                            <td className="border-b border-[#E8E8E8]">
+                              <span className={`inline-flex items-center justify-center w-20 px-2 py-1 rounded-full text-xs font-medium
+                                ${issue.severity === 'High' 
+                                  ? 'severity-high' 
+                                  : issue.severity === 'Medium'
+                                    ? 'severity-medium'
+                                    : 'severity-low'}`}>
+                                {issue.severity}
+                              </span>
+                            </td>
+                            <td className="text-[#666666] border-b border-[#E8E8E8]">
+                              {issue.details}
+                            </td>
+                            <td className="font-medium border-b border-[#E8E8E8]">
+                              {issue.estimatedCost}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
 
-                        <div className="bg-white shadow-lg rounded-xl p-4 overflow-hidden border border-gray-100">
-                          <h3 className="text-sm font-medium text-gray-900 mb-4">Recommendations</h3>
-                          <div className="overflow-x-auto">
-                            <table className="analysis-table">
-                              <thead>
-                                <tr>
-                                  <th className="rounded-tl-lg w-2/5">Action Item</th>
-                                  <th className="w-1/6">Priority</th>
-                                  <th className="rounded-tr-lg w-2/5">Timeframe</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {analysisData.recommendations.map((rec: any, index: number) => (
-                                  <tr key={index} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                    <td className="font-medium border-b border-gray-100">
-                                      {rec.action}
-                                    </td>
-                                    <td className="border-b border-gray-100">
-                                      <span className={`inline-flex items-center justify-center w-20 px-2 py-1 rounded-full text-xs font-medium
-                                        ${rec.priority === 'High' 
-                                          ? 'severity-high' 
-                                          : rec.priority === 'Medium'
-                                            ? 'severity-medium'
-                                            : 'severity-low'}`}>
-                                        {rec.priority}
-                                      </span>
-                                    </td>
-                                    <td className="text-gray-600 border-b border-gray-100">
-                                      {rec.timeframe}
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
+                <div className="bg-white shadow-lg rounded-xl p-4 overflow-hidden border border-[#E8E8E8]">
+                  <h3 className="text-sm font-medium text-[#333333] mb-4">Recommendations</h3>
+                  <div className="overflow-x-auto">
+                    <table className="analysis-table">
+                      <thead>
+                        <tr>
+                          <th className="rounded-tl-lg w-2/5">Action Item</th>
+                          <th className="w-1/6">Priority</th>
+                          <th className="rounded-tr-lg w-2/5">Timeframe</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analysis.recommendations.map((rec: any, index: number) => (
+                          <tr key={index} className={`hover:bg-[#fafafa] transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-[#fafafa]'}`}>
+                            <td className="font-medium border-b border-[#E8E8E8]">
+                              {rec.action}
+                            </td>
+                            <td className="border-b border-[#E8E8E8]">
+                              <span className={`inline-flex items-center justify-center w-20 px-2 py-1 rounded-full text-xs font-medium
+                                ${rec.priority === 'High' 
+                                  ? 'severity-high' 
+                                  : rec.priority === 'Medium'
+                                    ? 'severity-medium'
+                                    : 'severity-low'}`}>
+                                {rec.priority}
+                              </span>
+                            </td>
+                            <td className="text-[#666666] border-b border-[#E8E8E8]">
+                              {rec.timeframe}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
 
-                        <div className="mt-8 bg-white rounded-xl shadow-xl border border-gray-200 p-6">
-                          <div className="pb-4 mb-4 border-b border-gray-200">
-                            <div className="flex items-center justify-between mb-4">
-                              <h3 className="text-lg font-semibold text-gray-900">Email Draft</h3>
-                              <button
-                                onClick={copyEmailTemplate}
-                                className="btn-secondary"
-                              >
-                                <svg className="mr-1.5 h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                                {emailCopied ? 'Copied!' : 'Copy to Clipboard'}
-                              </button>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
-                              <div>
-                                <span className="font-medium">From:</span> [Your Name] &lt;[your.email@example.com]&gt;
-                              </div>
-                              <div>
-                                <span className="font-medium">To:</span> [Client Name] &lt;[client.email@example.com]&gt;
-                              </div>
-                              <div className="col-span-2">
-                                <span className="font-medium">Subject:</span> Disclosure Package Analysis Results - {analysisData.propertyAddress || '[Property Address]'}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="prose prose-sm max-w-none">
-                            <pre id="emailTemplate" className="email-template">
+                <div className="mt-8 bg-white rounded-xl shadow-xl border border-[#E8E8E8] p-6">
+                  <div className="pb-4 mb-4 border-b border-[#E8E8E8]">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-[#333333]">Email Draft</h3>
+                      <button
+                        onClick={copyEmailTemplate}
+                        className="btn-secondary"
+                      >
+                        <svg className="mr-1.5 h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        {emailCopied ? 'Copied!' : 'Copy to Clipboard'}
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs text-[#666666]">
+                      <div>
+                        <span className="font-medium">From:</span> [Your Name] &lt;[your.email@example.com]&gt;
+                      </div>
+                      <div>
+                        <span className="font-medium">To:</span> [Client Name] &lt;[client.email@example.com]&gt;
+                      </div>
+                      <div className="col-span-2">
+                        <span className="font-medium">Subject:</span> Disclosure Package Analysis Results - {analysis.propertyAddress || '[Property Address]'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="prose prose-sm max-w-none overflow-auto">
+                    <pre id="emailTemplate" className="whitespace-pre-wrap text-sm text-[#333333] font-mono leading-relaxed">
 {`Dear [Client Name],
 
-I trust this email finds you well. I've completed a comprehensive analysis of the disclosure package for ${analysisData.propertyAddress || '[Property Address]'} and would like to share our detailed findings with you.
+I trust this email finds you well. I've completed a comprehensive analysis of the disclosure package for ${analysis.propertyAddress || '[Property Address]'} and would like to share our detailed findings with you.
 
 EXECUTIVE SUMMARY
 ----------------
-${analysisData.summary}
+${analysis.summary}
 
 KEY ISSUES IDENTIFIED
 -------------------
-${analysisData.issues.map((issue: any) => `${issue.severity.toUpperCase()} PRIORITY: ${issue.issue}
+${analysis.issues.map((issue: any) => `${issue.severity.toUpperCase()} PRIORITY: ${issue.issue}
 • Details: ${issue.details}
 • Estimated Cost: ${issue.estimatedCost}`).join('\n\n')}
 
 RECOMMENDED ACTIONS
 -----------------
-${analysisData.recommendations.map((rec: any) => `${rec.priority.toUpperCase()} PRIORITY: ${rec.action}
+${analysis.recommendations.map((rec: any) => `${rec.priority.toUpperCase()} PRIORITY: ${rec.action}
 • Timeframe: ${rec.timeframe}`).join('\n\n')}
 
 SUGGESTED NEXT STEPS
@@ -486,7 +441,7 @@ SUGGESTED NEXT STEPS
 COST SUMMARY
 -----------
 Based on the identified issues, here's a high-level cost breakdown:
-${analysisData.issues.map((issue: any) => `• ${issue.issue}: ${issue.estimatedCost}`).join('\n')}
+${analysis.issues.map((issue: any) => `• ${issue.issue}: ${issue.estimatedCost}`).join('\n')}
 
 I want to ensure you have all the information needed to make an informed decision about this property. The items above represent our initial analysis, but please don't hesitate to ask for clarification or additional details about any specific points.
 
@@ -505,21 +460,9 @@ Contact Information:
 🌐 [Company Website]
 
 CONFIDENTIALITY NOTICE: This email and any attachments are intended solely for the named recipient(s) and may contain confidential information. If you have received this in error, please notify the sender immediately and delete all copies.`}
-                            </pre>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  } catch (e) {
-                    return (
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <pre className="text-xs text-gray-700 whitespace-pre-wrap">
-                          {analysis}
-                        </pre>
-                      </div>
-                    );
-                  }
-                })()}
+                    </pre>
+                  </div>
+                </div>
               </div>
             )}
           </div>

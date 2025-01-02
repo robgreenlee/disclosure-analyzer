@@ -48,8 +48,8 @@ export async function POST(request: Request) {
 
     console.log(`[${requestId}] Content length: ${fileContent.length}`);
 
-    // Split content if too long (being very conservative with limits)
-    const MAX_CHUNK_SIZE = 15000; // Reduced limit to test
+    // Set maximum content size for analysis
+    const MAX_CHUNK_SIZE = 250000; // Increased to handle larger documents
     let contentToAnalyze = fileContent;
 
     if (fileContent.length > MAX_CHUNK_SIZE) {
