@@ -15,37 +15,38 @@
   }
   
   body {
-    @apply min-h-screen bg-[#fafafa] text-[#333333];
+    @apply min-h-screen bg-gradient-to-br from-[#fafafa] via-white to-[#f5f0f7] text-[#333333];
   }
 }
 
 @layer components {
   .btn-primary {
     @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white 
-    bg-[#5B2C6F] hover:bg-[#936BA3] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5B2C6F] 
+    bg-gradient-to-r from-[#5B2C6F] to-[#936BA3] hover:from-[#6d357f] hover:to-[#a67db8] 
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5B2C6F] 
     disabled:opacity-50 transition-all duration-200;
   }
   
   .btn-secondary {
     @apply inline-flex items-center px-3 py-1.5 border border-[#5B2C6F] text-sm font-medium rounded-full 
-    text-[#5B2C6F] bg-white hover:bg-[#fafafa] focus:outline-none focus:ring-2 focus:ring-offset-2 
-    focus:ring-[#5B2C6F] transition-all duration-200;
+    text-[#5B2C6F] bg-white hover:bg-gradient-to-r hover:from-[#faf6fc] hover:to-white
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5B2C6F] transition-all duration-200;
   }
   
   .card {
-    @apply bg-white shadow-lg rounded-xl border border-[#E8E8E8];
+    @apply bg-gradient-to-br from-white to-[#faf6fc] shadow-lg rounded-xl border border-[#E8E8E8];
   }
 
   .severity-high {
-    @apply bg-red-50 text-red-800 border border-red-200;
+    @apply bg-gradient-to-r from-red-50 to-white text-red-800 border border-red-200;
   }
 
   .severity-medium {
-    @apply bg-yellow-50 text-yellow-800 border border-yellow-200;
+    @apply bg-gradient-to-r from-yellow-50 to-white text-yellow-800 border border-yellow-200;
   }
 
   .severity-low {
-    @apply bg-green-50 text-green-800 border border-green-200;
+    @apply bg-gradient-to-r from-green-50 to-white text-green-800 border border-green-200;
   }
 
   .analysis-table {
@@ -53,7 +54,8 @@
   }
 
   .analysis-table th {
-    @apply px-4 py-2 text-left text-xs font-medium text-[#666666] uppercase tracking-wider bg-[#fafafa];
+    @apply px-4 py-2 text-left text-xs font-medium text-[#666666] uppercase tracking-wider 
+    bg-gradient-to-r from-[#f8f4fa] to-[#fafafa];
   }
 
   .analysis-table td {
@@ -63,15 +65,25 @@
   .email-template {
     @apply font-mono text-sm text-[#333333] whitespace-pre-wrap leading-relaxed;
   }
+
+  .section-card {
+    @apply bg-gradient-to-br from-white via-white to-[#faf6fc] shadow-lg rounded-xl border border-[#E8E8E8]
+    hover:from-white hover:via-[#faf6fc] hover:to-[#f5f0f7] transition-all duration-300;
+  }
+
+  .header-gradient {
+    @apply bg-gradient-to-r from-[#5B2C6F] to-[#936BA3] bg-clip-text text-transparent;
+  }
 }
 
 /* Custom gradients and backgrounds */
 .bg-anthropic-gradient {
-  background: linear-gradient(135deg, rgba(91, 44, 111, 0.05) 0%, rgba(147, 107, 163, 0.05) 100%);
+  background: radial-gradient(circle at top left, rgba(91, 44, 111, 0.05) 0%, rgba(147, 107, 163, 0.03) 50%, rgba(255, 255, 255, 0) 100%),
+              radial-gradient(circle at bottom right, rgba(147, 107, 163, 0.05) 0%, rgba(91, 44, 111, 0.03) 50%, rgba(255, 255, 255, 0) 100%);
 }
 
 .bg-anthropic-card {
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 246, 252, 0.95) 100%);
   backdrop-filter: blur(8px);
 }
 
@@ -81,4 +93,31 @@
 
 .border-anthropic {
   border-color: #E8E8E8;
+}
+
+/* Hover effects */
+.hover-lift {
+  @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg;
+}
+
+.hover-glow {
+  @apply transition-all duration-300 hover:shadow-[0_0_15px_rgba(91,44,111,0.1)];
+}
+
+/* Animation */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
 }

@@ -154,7 +154,7 @@ export default function Home() {
           <div className="mb-3 inline-flex rounded-full px-3 py-1 text-xs text-[#5B2C6F] ring-1 ring-[#5B2C6F] bg-white">
             Powered by Claude AI
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#5B2C6F] mb-2">
+          <h1 className="text-2xl font-bold tracking-tight header-gradient animate-gradient mb-2">
             Disclosure Package Analyzer
           </h1>
           <p className="text-sm text-[#666666] max-w-md mx-auto">
@@ -208,7 +208,7 @@ export default function Home() {
             {files.length > 0 && (
               <div className="mt-6 space-y-4">
                 {files.map((file, index) => (
-                  <div key={index} className="bg-white rounded-xl p-4 border border-[#E8E8E8] shadow-lg">
+                  <div key={index} className="section-card p-4 hover-lift hover-glow">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
                         <div className="w-8 h-8 rounded-lg bg-[#fafafa] shadow-md border border-[#E8E8E8] flex items-center justify-center">
@@ -302,12 +302,12 @@ export default function Home() {
                   </h2>
                 </div>
                 
-                <div className="bg-white rounded-xl p-4 border border-[#E8E8E8] shadow-lg">
+                <div className="section-card p-4 hover-lift hover-glow">
                   <h3 className="text-sm font-medium text-[#5B2C6F] mb-2">Executive Summary</h3>
                   <p className="text-sm text-[#666666] leading-relaxed">{analysis.summary}</p>
                 </div>
 
-                <div className="bg-white shadow-lg rounded-xl p-4 overflow-hidden border border-[#E8E8E8]">
+                <div className="section-card p-4 overflow-hidden hover-lift hover-glow">
                   <h3 className="text-sm font-medium text-[#333333] mb-4">Issues Identified</h3>
                   <div className="overflow-x-auto">
                     <table className="analysis-table">
@@ -348,7 +348,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="bg-white shadow-lg rounded-xl p-4 overflow-hidden border border-[#E8E8E8]">
+                <div className="section-card p-4 overflow-hidden hover-lift hover-glow">
                   <h3 className="text-sm font-medium text-[#333333] mb-4">Recommendations</h3>
                   <div className="overflow-x-auto">
                     <table className="analysis-table">
@@ -385,7 +385,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="mt-8 bg-white rounded-xl shadow-xl border border-[#E8E8E8] p-6">
+                <div className="mt-8 section-card p-6 hover-lift hover-glow">
                   <div className="pb-4 mb-4 border-b border-[#E8E8E8]">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold text-[#333333]">Email Draft</h3>
